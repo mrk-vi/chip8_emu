@@ -454,7 +454,21 @@ impl C8Emulator {
 
 #[cfg(test)]
 mod tests {
+    use std::{thread::sleep, time::Duration};
+
     use super::*;
+
+    const MAZE: [u8; 34] = [
+        0xa2, 0x1e, 0xc2, 0x01, //
+        0x32, 0x01, 0xa2, 0x1a, //
+        0xd0, 0x14, 0x70, 0x04, //
+        0x30, 0x40, 0x12, 0x00, //
+        0x60, 0x00, 0x71, 0x04, //
+        0x31, 0x20, 0x12, 0x00, //
+        0x12, 0x18, 0x80, 0x40, //
+        0x20, 0x10, 0x20, 0x40, //
+        0x80, 0x10,
+    ];
 
     // Stack tests
 
@@ -551,5 +565,27 @@ mod tests {
         assert_eq!(2, c8.ram[bcd_addr]);
         assert_eq!(3, c8.ram[bcd_addr + 1]);
         assert_eq!(4, c8.ram[bcd_addr + 2]);
+    }
+
+    // games
+
+    #[test]
+    fn load_maze_execute_100_instructions() {
+        let mut c8 = C8Emulator::new();
+
+        c8.load(&MAZE);
+
+        let mut counter = 0;
+        loop {
+            c8.cpu_cycle();
+
+            println!("program_counter: 0x{:x}", c8.pc);
+
+            counter += 1;
+            sleep(Duration::from_millis(5));
+            if counter >= 100 {
+                break;
+            }
+        }
     }
 }
