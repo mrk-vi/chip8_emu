@@ -38,14 +38,16 @@ const FONTSET: [u8; FONTSET_SIZE] = [
     0xF0, 0x80, 0xF0, 0x80, 0x80, // F => 1111, 1000, 1111, 1000, 1000
 ];
 
-struct LGC {
+/// Linear Congruential Generator
+struct LCG {
     state: u32,
 }
 
-impl LGC {
+impl LCG {
     fn new(seed: u32) -> Self {
         Self { state: seed }
     }
+
     fn rand(&mut self) -> u32 {
         self.state = self.state.wrapping_mul(1103515245).wrapping_add(12345);
         (self.state >> 16) & 0x7FFF
@@ -99,7 +101,7 @@ struct C8Emulator {
     sound_t: u8,              // sound timer
     screen: [bool; SCREEN_WIDTH * SCREEN_HEIGHT],
     keys: [bool; KEYS_SIZE],
-    rand_gen: LGC,
+    rand_gen: LCG,
 }
 
 impl C8Emulator {
@@ -114,7 +116,7 @@ impl C8Emulator {
             sound_t: 0,
             screen: [false; SCREEN_WIDTH * SCREEN_HEIGHT],
             keys: [false; KEYS_SIZE],
-            rand_gen: LGC::new(1), // maybe the seed could be "randomized"
+            rand_gen: LCG::new(1), // maybe the seed could be "randomized"
         };
 
         // Loading the fontset in memory.
