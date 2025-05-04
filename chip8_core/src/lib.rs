@@ -597,7 +597,9 @@ mod tests {
             if counter % 33 == 0 {
                 let screen = c8.get_screen();
 
+                // clear the screen
                 print!("\x1B[2J");
+                // move to the top-left
                 print!("\x1B[1;1H");
 
                 for i in 0..32 {
@@ -612,6 +614,7 @@ mod tests {
                     println!();
                 }
 
+                // flush the changes
                 std::io::stdout().flush().unwrap();
             }
         }
