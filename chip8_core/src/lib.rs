@@ -1,5 +1,3 @@
-use std::{u8, usize};
-
 const SCREEN_WIDTH: usize = 64;
 const SCREEN_HEIGHT: usize = 32;
 const KEYS_SIZE: usize = 16;
