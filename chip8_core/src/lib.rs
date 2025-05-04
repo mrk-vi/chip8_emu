@@ -469,7 +469,7 @@ impl C8Emulator {
 
 #[cfg(test)]
 mod tests {
-    use std::{thread::sleep, time::Duration};
+    use std::{io::Write, thread::sleep, time::Duration};
 
     use super::*;
 
@@ -594,12 +594,27 @@ mod tests {
         loop {
             c8.cpu_cycle();
 
-            println!("program_counter: 0x{:x}", c8.pc);
-
             counter += 1;
-            sleep(Duration::from_millis(5));
-            if counter >= 100 {
-                break;
+            sleep(Duration::from_millis(1));
+            if counter % 33 == 0 {
+                let screen = c8.get_screen();
+
+                print!("\x1B[2J");
+                print!("\x1B[1;1H");
+
+                for i in 0..32 {
+                    for j in 0..64 {
+                        let pixel = if screen[j + SCREEN_WIDTH * i] {
+                            '*'
+                        } else {
+                            ' '
+                        };
+                        print!("{pixel}");
+                    }
+                    println!();
+                }
+
+                std::io::stdout().flush().unwrap();
             }
         }
     }
