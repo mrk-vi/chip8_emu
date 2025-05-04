@@ -1,3 +1,5 @@
+use std::io::Write;
+
 const SCREEN_WIDTH: usize = 64;
 const SCREEN_HEIGHT: usize = 32;
 const KEYS_SIZE: usize = 16;
@@ -465,9 +467,34 @@ impl C8Emulator {
     }
 }
 
+fn print_screen(emu: &C8Emulator) {
+    let screen = emu.get_screen();
+
+    // clear the screen
+    print!("\x1B[2J");
+
+    // move to the top-left
+    print!("\x1B[1;1H");
+
+    for i in 0..32 {
+        for j in 0..64 {
+            let pixel = if screen[j + SCREEN_WIDTH * i] {
+                '*'
+            } else {
+                ' '
+            };
+            print!("{pixel}");
+        }
+        println!();
+    }
+
+    // flush the changes
+    std::io::stdout().flush().unwrap();
+}
+
 #[cfg(test)]
 mod tests {
-    use std::{io::Write, thread::sleep, time::Duration};
+    use std::{thread::sleep, time::Duration};
 
     use super::*;
 
@@ -595,27 +622,7 @@ mod tests {
             counter += 1;
             sleep(Duration::from_millis(1));
             if counter % 33 == 0 {
-                let screen = c8.get_screen();
-
-                // clear the screen
-                print!("\x1B[2J");
-                // move to the top-left
-                print!("\x1B[1;1H");
-
-                for i in 0..32 {
-                    for j in 0..64 {
-                        let pixel = if screen[j + SCREEN_WIDTH * i] {
-                            '*'
-                        } else {
-                            ' '
-                        };
-                        print!("{pixel}");
-                    }
-                    println!();
-                }
-
-                // flush the changes
-                std::io::stdout().flush().unwrap();
+                print_screen(&c8);
             }
         }
     }
