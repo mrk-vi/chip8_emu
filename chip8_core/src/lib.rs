@@ -348,22 +348,23 @@ impl C8Emulator {
             (0xD, x, y, n) => {
                 // Draw Sprite
                 let sprite_p = self.i_reg as usize;
+
+                let x_coord = self.v_regs[x as usize] as usize;
+                let y_coord = self.v_regs[y as usize] as usize;
+
                 let mut flipped = false;
-                for i in 0..=n_row {
+                for i in 0..n {
                     let sprite_row = self.ram[sprite_p + i as usize];
-                    let start_p = (x + SCREEN_WIDTH as u16 * y * (i + 1)) as usize;
+
                     for j in 0..8 {
-                        let current_p = start_p + j as usize;
+                        if ((sprite_row << j) & 0b_1000_0000) >> 7 != 0 {
+                            let x_coord = (x_coord + j) % SCREEN_WIDTH;
+                            let y_coord = (y_coord + i as usize) % SCREEN_HEIGHT;
 
-                        let pixel = if sprite_row & 2_u8.pow(j) == 1 {
-                            true
-                        } else {
-                            false
-                        };
+                            let idx = x_coord + SCREEN_WIDTH * y_coord;
 
-                        if self.screen[current_p] != pixel {
-                            flipped = true;
-                            self.screen[current_p] = pixel;
+                            flipped ^= self.screen[idx];
+                            self.screen[idx] |= true;
                         }
                     }
                 }
