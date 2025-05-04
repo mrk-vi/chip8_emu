@@ -331,7 +331,21 @@ impl C8Emulator {
                 let nn = (op_code & 0xFF) as u8;
                 self.v_regs[x as usize] = rand & nn;
             }
-            (0xD, x, y, n_row) => {
+
+            (0xD, 0xD, 0xD, 0xD) => {
+                // (Custom instruction) Draw a random screen
+                for i in 0..32 {
+                    for j in 0..64 {
+                        let pixel = if self.rand_gen.rand_u8() > 127 {
+                            true
+                        } else {
+                            false
+                        };
+                        self.screen[j + SCREEN_WIDTH * i] = pixel;
+                    }
+                }
+            }
+            (0xD, x, y, n) => {
                 // Draw Sprite
                 let sprite_p = self.i_reg as usize;
                 let mut flipped = false;
