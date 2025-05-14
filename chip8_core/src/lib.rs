@@ -91,7 +91,7 @@ impl Stack {
     }
 }
 
-struct C8Emulator {
+pub struct C8Emulator {
     pc: u16, // program counter
     ram: [u8; RAM_SIZE],
     stack: Stack,
@@ -154,13 +154,13 @@ impl C8Emulator {
     }
 
     /// Consist in the fetch-decode-execute cycle,
-    fn cpu_cycle(&mut self) {
+    pub fn cpu_cycle(&mut self) {
         let op_code = self.fetch();
 
         self.decode_and_execute(op_code);
     }
 
-    fn frame_cycle(&mut self) {
+    pub fn frame_cycle(&mut self) {
         // handle delay and sound
         if self.delay_t > 0 {
             self.delay_t -= 1;
@@ -428,7 +428,7 @@ impl C8Emulator {
                 // I = FONT ADDRESS (vx = font_value)
                 let vx = self.v_regs[x as usize] as u16;
 
-                // fonts are store at the beginning of ram, they are five byte
+                // fonts are stored at the beginning of ram, they are five byte
                 // long, so we just need to multiply their value for 5
                 // to obtain the start address of the sprite.
                 self.i_reg = vx * 5;
@@ -467,7 +467,7 @@ impl C8Emulator {
     }
 }
 
-fn print_screen(emu: &C8Emulator) {
+pub fn print_screen(emu: &C8Emulator) {
     let screen = emu.get_screen();
 
     // clear the screen
