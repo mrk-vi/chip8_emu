@@ -467,31 +467,6 @@ impl C8Emulator {
     }
 }
 
-pub fn print_screen(emu: &C8Emulator) {
-    let screen = emu.get_screen();
-
-    // clear the screen
-    print!("\x1B[2J");
-
-    // move to the top-left
-    print!("\x1B[1;1H");
-
-    for i in 0..32 {
-        for j in 0..64 {
-            let pixel = if screen[j + SCREEN_WIDTH * i] {
-                '*'
-            } else {
-                ' '
-            };
-            print!("{pixel}");
-        }
-        println!();
-    }
-
-    // flush the changes
-    std::io::stdout().flush().unwrap();
-}
-
 #[cfg(test)]
 mod tests {
     use std::{thread::sleep, time::Duration};
@@ -645,5 +620,30 @@ mod tests {
                 break;
             }
         }
+    }
+
+    fn print_screen(emu: &C8Emulator) {
+        let screen = emu.get_screen();
+
+        // clear the screen
+        print!("\x1B[2J");
+
+        // move to the top-left
+        print!("\x1B[1;1H");
+
+        for i in 0..32 {
+            for j in 0..64 {
+                let pixel = if screen[j + SCREEN_WIDTH * i] {
+                    '*'
+                } else {
+                    ' '
+                };
+                print!("{pixel}");
+            }
+            println!();
+        }
+
+        // flush the changes
+        std::io::stdout().flush().unwrap();
     }
 }
