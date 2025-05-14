@@ -1,0 +1,8 @@
+[package]
+name = "chip8_term"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chip8_core = { path = "../chip8_core" }
+termion = "2.0.1"
