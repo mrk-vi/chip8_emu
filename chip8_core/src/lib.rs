@@ -527,7 +527,7 @@ mod tests {
 
     #[test]
     #[should_panic]
-    fn panic_with_invalid_sp() {
+    fn invalid_sp() {
         let mut stack = Stack::new();
         stack.pop();
     }
@@ -607,10 +607,15 @@ mod tests {
         assert_eq!(4, c8.ram[bcd_addr + 2]);
     }
 
-    // games
+    // test ROMs
+
+    const MAZE_FIRST_LINE: &str =
+        "*   *     *   *   *   * *     * *   *     *   * *   *     *   * ";
+
+    const MAZE_LAST_LINE: &str = "   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *   *";
 
     #[test]
-    fn load_maze_execute_100_instructions() {
+    fn execute_1000_instructions_of_maze() {
         let mut c8 = C8Emulator::new();
 
         c8.load(&MAZE);
@@ -623,6 +628,21 @@ mod tests {
             sleep(Duration::from_millis(1));
             if counter % 33 == 0 {
                 print_screen(&c8);
+            }
+            if counter == 1000 {
+                let line1: String = c8.get_screen()[0..64]
+                    .iter()
+                    .map(|x| if *x { '*' } else { ' ' })
+                    .collect();
+
+                let line2: String = c8.get_screen()[1984..2048]
+                    .iter()
+                    .map(|x| if *x { '*' } else { ' ' })
+                    .collect();
+
+                assert_eq!(MAZE_FIRST_LINE, line1);
+                assert_eq!(MAZE_LAST_LINE, line2);
+                break;
             }
         }
     }
