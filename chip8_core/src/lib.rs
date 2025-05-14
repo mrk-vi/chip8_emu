@@ -1,7 +1,7 @@
 use std::io::Write;
 
-const SCREEN_WIDTH: usize = 64;
-const SCREEN_HEIGHT: usize = 32;
+pub const SCREEN_WIDTH: usize = 64;
+pub const SCREEN_HEIGHT: usize = 32;
 const KEYS_SIZE: usize = 16;
 
 const RAM_SIZE: usize = 4096;
