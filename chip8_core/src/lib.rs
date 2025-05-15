@@ -1,5 +1,3 @@
-use std::io::Write;
-
 pub const SCREEN_WIDTH: usize = 64;
 pub const SCREEN_HEIGHT: usize = 32;
 const KEYS_SIZE: usize = 16;
@@ -469,7 +467,7 @@ impl C8Emulator {
 
 #[cfg(test)]
 mod tests {
-    use std::{thread::sleep, time::Duration};
+    use std::{io::Write, thread::sleep, time::Duration};
 
     use super::*;
 
@@ -630,6 +628,9 @@ mod tests {
 
         // move to the top-left
         print!("\x1B[1;1H");
+
+        // flush the changes
+        std::io::stdout().flush().unwrap();
 
         for i in 0..32 {
             for j in 0..64 {
