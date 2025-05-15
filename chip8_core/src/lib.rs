@@ -278,10 +278,10 @@ impl C8Emulator {
                 // VX -= VY
                 let vx = self.v_regs[x as usize];
                 let vy = self.v_regs[y as usize];
-                let (new_vx, carry) = vx.overflowing_sub(vy);
+                let (new_vx, borrow) = vx.overflowing_sub(vy);
 
                 self.v_regs[x as usize] = new_vx;
-                self.v_regs[0xF] = if carry { 0 } else { 1 };
+                self.v_regs[0xF] = if borrow { 0 } else { 1 };
             }
             (8, x, _, 6) => {
                 // VX >>= 1; VF = lsb
@@ -294,10 +294,10 @@ impl C8Emulator {
                 // VX = VY - VX
                 let vx = self.v_regs[x as usize];
                 let vy = self.v_regs[y as usize];
-                let (new_vx, carry) = vy.overflowing_sub(vx);
+                let (new_vx, borrow) = vy.overflowing_sub(vx);
 
                 self.v_regs[x as usize] = new_vx;
-                self.v_regs[0xF] = if carry { 0 } else { 1 };
+                self.v_regs[0xF] = if borrow { 0 } else { 1 };
             }
             (8, x, _, 0xE) => {
                 // VX <<= 1; VF = msb
