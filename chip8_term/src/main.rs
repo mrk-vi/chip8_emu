@@ -61,8 +61,6 @@ fn main() -> io::Result<()> {
         }
         ch8.frame_cycle();
 
-        // chip8_core::print_screen(&ch8);
-
         refresh_screen(&mut stdout, &ch8)?;
     }
 
@@ -76,6 +74,7 @@ fn refresh_screen(
     let screen = ch8.get_screen();
 
     write!(stdout, "{}", termion::clear::All)?;
+    stdout.flush()?;
 
     for y in 0..SCREEN_HEIGHT {
         let line: String = screen[(y * SCREEN_WIDTH)..((y + 1) * SCREEN_WIDTH)]
